@@ -165,7 +165,7 @@ fun MainShowcaseContent(
                 label = "TabContentAnimation"
             ) { targetTab ->
                 when (targetTab) {
-                    0 -> InicioTabContent(viewModel = viewModel, onBookClick = { selectedTab = 2 })
+                    0 -> InicioTabContent(viewModel = viewModel, onBookClick = { selectedTab = 2 }, onTabSelect = { selectedTab = it })
                     1 -> TerapiasTabContent()
                     2 -> AgendaTabContent(viewModel = viewModel)
                     3 -> QrTabContent()
@@ -271,12 +271,86 @@ fun TopLuxuryBrandingHeader(context: Context) {
     }
 }
 
+// --- ADDITIONAL HELPERS FOR CONTACT GRID ---
+
+@Composable
+fun SocialGridCard(
+    title: String,
+    channelColor: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    iconContent: @Composable () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSilver)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .background(Color.White, RoundedCornerShape(12.dp))
+                    .border(
+                        androidx.compose.foundation.BorderStroke(
+                            1.dp,
+                            Brush.linearGradient(listOf(channelColor, ThermalTerra))
+                        ),
+                        RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                iconContent()
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelLarge,
+                color = ClayWarmText,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+fun MiniGridPattern(channelColor: Color) {
+    Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+            Box(modifier = Modifier.size(6.dp).background(channelColor, RoundedCornerShape(1.5.dp)))
+            Box(modifier = Modifier.size(6.dp).background(BorderSilver, RoundedCornerShape(1.5.dp)))
+            Box(modifier = Modifier.size(6.dp).background(channelColor, RoundedCornerShape(1.5.dp)))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+            Box(modifier = Modifier.size(6.dp).background(BorderSilver, RoundedCornerShape(1.5.dp)))
+            Box(modifier = Modifier.size(6.dp).background(channelColor, RoundedCornerShape(1.5.dp)))
+            Box(modifier = Modifier.size(6.dp).background(BorderSilver, RoundedCornerShape(1.5.dp)))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+            Box(modifier = Modifier.size(6.dp).background(channelColor, RoundedCornerShape(1.5.dp)))
+            Box(modifier = Modifier.size(6.dp).background(BorderSilver, RoundedCornerShape(1.5.dp)))
+            Box(modifier = Modifier.size(6.dp).background(channelColor, RoundedCornerShape(1.5.dp)))
+        }
+    }
+}
+
 // --- TAB CONTENT 0: REGULAR HOME TAB ---
 
 @Composable
 fun InicioTabContent(
     viewModel: TherapyViewModel,
-    onBookClick: () -> Unit
+    onBookClick: () -> Unit,
+    onTabSelect: (Int) -> Unit
 ) {
     val context = LocalContext.current
     val reviews by viewModel.reviews.collectAsStateWithLifecycle()
@@ -286,7 +360,7 @@ fun InicioTabContent(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Premium Promotional Banner Hero
+        // 1. Welcome Card
         item {
             Card(
                 modifier = Modifier
@@ -295,10 +369,171 @@ fun InicioTabContent(
                 shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(containerColor = CeramicSilt)
             ) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    // Decorative ambient light circle in bottom right
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .offset(x = 32.dp, y = 32.dp)
+                            .size(160.dp)
+                            .clip(CircleShape)
+                            .background(JadeLight.copy(alpha = 0.25f))
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp)
+                    ) {
+                        Text(
+                            text = "BIENVENIDA",
+                            color = ThermalTerra,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.sp
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Carmen Viera Proaño",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = ClayWarmText,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Especialistas en bienestar térmico y recuperación muscular integral en la ciudad de Ambato.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = SoftGrey,
+                            lineHeight = 22.sp
+                        )
+                    }
+                }
+            }
+        }
+
+        // 2. Exact Location Card
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                border = androidx.compose.foundation.BorderStroke(1.dp, BorderSilver)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(CeramicSilt, RoundedCornerShape(12.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = "Ubicación",
+                            tint = ThermalTerra,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "UBICACIÓN: AMBATO",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = ThermalTerra,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.5.sp
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Febres Cordero e/ Mariano Enríquez y Mariano Tinajero",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = SoftGrey
+                        )
+                    }
+                }
+            }
+        }
+
+        // 3. Contact Social Grid header
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Medios de Contacto",
+                style = MaterialTheme.typography.titleLarge,
+                color = ClayWarmText,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        // 4. Contact Grid Section (4 Social Channels)
+        item {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    SocialGridCard(
+                        title = "WhatsApp",
+                        channelColor = Color(0xFF25D366),
+                        onClick = { onTabSelect(3) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        MiniGridPattern(Color(0xFF25D366))
+                    }
+                    SocialGridCard(
+                        title = "Facebook",
+                        channelColor = Color(0xFF1877F2),
+                        onClick = { onTabSelect(3) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        MiniGridPattern(Color(0xFF1877F2))
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    SocialGridCard(
+                        title = "Instagram",
+                        channelColor = Color(0xFFE1306C),
+                        onClick = { onTabSelect(3) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        MiniGridPattern(Color(0xFFE1306C))
+                    }
+                    SocialGridCard(
+                        title = "TikTok",
+                        channelColor = Color(0xFF000000),
+                        onClick = { onTabSelect(3) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        MiniGridPattern(Color(0xFF000000))
+                    }
+                }
+            }
+        }
+
+        // 5. Promo/Action Card
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("promo_banner_card"),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = OffWhiteComfort),
+                border = androidx.compose.foundation.BorderStroke(1.dp, BorderSilver)
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(24.dp)
+                        .padding(20.dp)
                 ) {
                     Box(
                         modifier = Modifier
@@ -307,28 +542,28 @@ fun InicioTabContent(
                             .padding(horizontal = 10.dp, vertical = 6.dp)
                     ) {
                         Text(
-                            text = "ALIVIO 100% NATURAL",
+                            text = "TRATAMIENTO NATURAL",
                             color = ThermalTerra,
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "Recupere su Vitalidad sin Medicamentos",
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         color = ClayWarmText,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Nuestro centro utiliza calor infrarrojo lejano, piedras de jade e iones negativos para restaurar la salud de su columna, aliviar el estrés y optimizar su circulación.",
+                        text = "Nuestras terapias combinan calor por infrarrojo lejano y camillas con rodillos de piedras de jade para restaurar la columna vertebral, eliminar dolores crónicos y reactivar la circulación.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = SoftGrey
                     )
-                    
-                    Spacer(modifier = Modifier.height(18.dp))
+
+                    Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -337,7 +572,9 @@ fun InicioTabContent(
                             onClick = onBookClick,
                             colors = ButtonDefaults.buttonColors(containerColor = ThermalTerra),
                             shape = RoundedCornerShape(100.dp),
-                            modifier = Modifier.testTag("hero_book_btn")
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag("hero_book_btn")
                         ) {
                             Icon(imageVector = Icons.Default.CalendarMonth, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(6.dp))
@@ -346,12 +583,13 @@ fun InicioTabContent(
 
                         Button(
                             onClick = {
-                                val url = "https://wa.me/593983630006?text=Hola%20Sra.%20Carmen%20Viera,%20me%20gustaría%20consultar%20sobre%20las%20terapias%20de%20calor."
+                                val url = "https://wa.me/593983630006?text=Hola%20Sra.%20Carmen%20Viera,%20me%20gustaría%20consultar%20sobre%20las%20terapias."
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                                 context.startActivity(intent)
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = JadeStone),
-                            shape = RoundedCornerShape(100.dp)
+                            shape = RoundedCornerShape(100.dp),
+                            modifier = Modifier.weight(1f)
                         ) {
                             Text("Consultar WhatsApp", fontWeight = FontWeight.Bold, color = Color.White)
                         }
