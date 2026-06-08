@@ -1,0 +1,8 @@
+{
+  "name": "Calor Terapéutico",
+  "description": "Landing page interactiva para el Centro de Calor Terapéutico de Carmen Viera Proaño en Ambato, Ecuador.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
